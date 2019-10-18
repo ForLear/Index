@@ -33,7 +33,6 @@ class Observer {
 }
 
 let observe = (value, vm) => {
-  console.log(value)
   /* 监听data数据列表 */
   if(!value || typeof value !== 'object') return
   return new Observer(value)

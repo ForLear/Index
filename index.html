@@ -15,12 +15,15 @@
   <div id="app">
     <div v-if="true">hey!
       <div v-if="true">
-        <div> {{ name }} {{ age }} {{ test }} 
-          <span @click="clickText">12345</span>
-          <span v-on:click="clickText">12345</span>
+        <div>! {{ name }} {{ age }} {{ test }} !
+          <br>
+          <button @click="clickText">click @</button>
+          <br>
+          <button v-on:click="clickText">click v-on</button>
         </div>
-        <input v-model="test" />
-        <input :model="test" />
+        <input v-model="hey" />
+        <input :model="hey" />
+        <p>{{ hey }}</p>
       </div>
     </div>
   </div>
@@ -36,6 +39,7 @@
       name: '新实例',
       age: '没年龄',
       test: '测试',
+      hey: 'hey!',
       obj: {
         nameX: '新名字'
       }

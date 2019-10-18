@@ -6,7 +6,7 @@ class Compile {
     /* 初始化fragment用于保存虚拟节点对象 */
     this.fragment = null
     /* 用于保存多个 {{ }} 中的值合集 */
-    this.val = ''
+    this.val = this.texts = ''
 
     /* 初始化 */
     this.init()
@@ -40,12 +40,13 @@ class Compile {
 
   /* 处理传入的fragment节点 */
   compileElement(el) {
-    // console.log(el)
     let childNodes = el.childNodes
     Array.prototype.slice.call(childNodes).forEach(node => {
       /* 将Dom节点中的 {{ }} 匹配出来 */
       let reg = new RegExp(/\{\{((?:.|\n)+?)\}\}/g),
-      text = node.textContent
+      text = node.textContent,
+      /* 处理多个 {{ }} 的情况 */
+      texts = node.textContent
 
       /* 保存正则匹配结果, exec会从当前匹配到的字符之后继续匹配, g为全局匹配标识 */
       let flag = reg.exec(text)
@@ -57,10 +58,12 @@ class Compile {
           /* 处理 {{ }} 中的空格 */
           if(flag[1].includes(' ')) flag[1] = flag[1].split(' ').join('')
           this.compileText(node, flag[1])
+          texts = texts.replace(flag[0], this.texts)
           flag = reg.exec(text)
         }
-        node.textContent = this.val
-        this.val = ''
+        if(texts) node.textContent = texts
+        this.val = this.texts = ''
+        
       }
 
       /* 递归遍历Dom下所有子节点 */
@@ -137,9 +140,10 @@ class Compile {
   /* 更新当前节点内 {{ }} 的值, 将其绑定vm实例中的data里对应属性 */
   updateText(node, value) {
     /* 单个 {{ }} */
-    // node.textContent = typeof value === 'undefined' ? '' : value
+    node.textContent = typeof value === 'undefined' ? '' : value
     /* 多个 {{ }} 时处理方案 */
     this.val += typeof value === 'undefined' ? '' : value
+    this.texts = typeof value === 'undefined' ? '' : value
   }
 
   /* 更新双向绑定中model的值 */
