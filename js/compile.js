@@ -54,6 +54,8 @@ class Compile {
       } else if(this.isTextNode(node) && flag) {
         /* 匹配文本内所有的 {{ }} */
         while(flag) {
+          /* 处理 {{ }} 中的空格 */
+          if(flag[1].includes(' ')) flag[1] = flag[1].split(' ').join('')
           this.compileText(node, flag[1])
           flag = reg.exec(text)
         }
@@ -83,47 +85,53 @@ class Compile {
     /* element上的属性 */
     let attrs = node.attributes
     Array.prototype.forEach.call(attrs, attr => {
-      let val = attr.value
-      this.attrType(node, this.vm, val, attr)
-      // if(this.attrType(node, this.vm, val, attr)) {
+      /* attr的value对应data中的key值 */
+      let exp = attr.value
+      this.attrType(node, this.vm, exp, attr)
+      // if(this.attrType(node, this.vm, exp, attr)) {
 
       // }
     })
   }
 
   /* 判断当前属性类型 */
-  attrType(node, vm, val, attr) {
-    /* on: 判断与 : 判断冲突, 优先判断是否为v-on: */
-    let event = this.isEventDirective(attr),
-      atr = this.isDirective(attr),
-      dir = attr.name.substring(event)
+  attrType(node, vm, exp, attr) {
+    /* on: 与 : 判断冲突, 优先判断是否为v-on: */
+    let event = this.isEventDirective(attr)
+    let atr = this.isDirective(attr)
+    let dir = attr.name.substring(event)
     if(event) {
-      this.compileEvent(node, vm, val, dir)
+      this.compileEvent(node, vm, exp, dir)
     } else if(atr) {
       attr.name.substring(atr)
-      this.compileModel(node, vm, val, dir)
+      this.compileModel(node, vm, exp, dir)
     }
   }
 
   /* 当前类型为事件 */
-  compileEvent(node, vm, val, dir) {
+  compileEvent(node, vm, exp, dir) {
     /* 判断当前事件在methods中是否存在 */
-    let cb = vm.methods && vm.methods[val]
+    let cb = vm.methods && vm.methods[exp]
     if(dir && cb) {
       /* 若使用call会立即执行cb函数, 而bind是将Vue的vm实例(this)绑定到cb函数中, 若不绑定则调用methods中方法时会取不到Vue实例中this里的值 */
       node.addEventListener(dir, cb.bind(vm), false)
     }
   }
 
-  compileModel(node, vm, val, dir) {
-    // console.log(node, vm, val, dir)
-    let modelVal = this.vm[val]
+  compileModel(node, vm, exp, dir) {
+    let modelVal = this.vm[exp]
     if(~dir.indexOf('model')) this.updateModel(node, modelVal)
-    new Watcher(this.vm, val, value => {
+    new Watcher(this.vm, exp, value => {
       this.updateModel(node, value)
     })
-    // console.log(node.target)
-    // node.addEventListener('input', )
+    node.addEventListener('input', e => {
+      /* 判断当前的值与输入后input的值是否相等 */
+      let newVal = e.target.value
+      if (modelVal === newVal) {
+        return
+      }
+      this.vm[exp] = modelVal = newVal
+    }, false)
   }
 
   /* 更新当前节点内 {{ }} 的值, 将其绑定vm实例中的data里对应属性 */

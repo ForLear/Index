@@ -8,6 +8,7 @@ class Vue {
       this.proxyKey(item)
     })
 
+    observe(this.data)
     new Compile(options.el, this)
     /* 所有事件处理完毕后执行mounted, 将this指向当前实例 */
     options.mounted.call(this)

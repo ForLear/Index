@@ -17,7 +17,6 @@
       <div v-if="true">
         <div> {{ name }} {{ age }} {{ test }} 
           <span @click="clickText">12345</span>
-          <span @mouseover="clickText">12345</span>
           <span v-on:click="clickText">12345</span>
         </div>
         <input v-model="test" />
@@ -37,18 +36,15 @@
       name: '新实例',
       age: '没年龄',
       test: '测试',
+      obj: {
+        nameX: '新名字'
+      }
     },
     mounted() {
-      this.name = '嘿嘿嘿'
       this.methods.clickBtn()
     },
     methods: {
       clickBtn() {
-        // let fragment = document.createDocumentFragment()
-        // console.log(document.querySelector('#app').firstChild)
-        // fragment.append(document.querySelector('#app').firstChild)
-        // console.log(document.querySelector('#app').firstChild)
-        // console.log(document.querySelector('#app').firstChild)
       },
       clickText() {
         console.log('名字: ' + this.name)

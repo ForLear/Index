@@ -3,7 +3,7 @@ class Watcher {
    *Creates an instance of Watch.
    * @param {object}    vm    指向Vue实例this
    * @param {string}    exp   data对象的key
-   * @param {function}  cb    
+   * @param {function}  cb    更新text/model回调
    * @memberof Watch
    */
   constructor(vm, exp, cb) {
@@ -31,8 +31,8 @@ class Watcher {
 
   get() {
     /* Dep的静态属性target, 缓存自己 */
-    if(this.exp.includes(' ')) this.exp = this.exp.split(' ').join('')
     Dep.target = this
+    /* 此处赋值 this.vm.data[this.exp] 会调用data中属性的get函数 */
     let value = this.vm.data[this.exp]
     /* Dep的静态属性target, 释放自己 */
     Dep.target = null
