@@ -9,13 +9,14 @@
 <style>
   #app {
     text-align: center;
+    margin-top: 200px;
   }
 </style>
 <body>
   <div id="app">
     <div v-if="true">hey!
       <div v-if="true">
-        <div>! {{ name }} {{ age }} {{ test }} !
+        <div>name: {{ name }} age: {{ age }} test: {{ test }}
           <br>
           <button @click="clickText">click @</button>
           <br>
@@ -23,7 +24,7 @@
         </div>
         <input v-model="hey" />
         <input :model="hey" />
-        <p>{{ hey }}</p>
+        <p>v-model: {{ hey }}</p>
       </div>
     </div>
   </div>
