@@ -56,5 +56,23 @@
       }
     },
   })
+
+  const quickSort = arr => {
+    if(arr.length <= 1) return arr
+    let ran, l = [], r = [], v = []
+    ran = Math.ceil(Math.random() * arr.length) -1
+
+    for(let i = 0; i < arr.length; i++) {
+      if (arr[i] < arr[ran]) {
+        l.push(arr[i])
+      } else if (arr[i] === arr[ran]) {
+        v.push(arr[i])
+      } else {
+        r.push(arr[i])
+      }
+    }
+    return [...quickSort(l), ...v, ...quickSort(r)]
+  }
+  // arr = quickSort([1, 2, 3, 51, 2, 35, 12, 351, 35, 2, 6, 26, 36, 236, 32, 46, 236, 2, 36, 236, 3, 7, 34, 74, 5, 734, 7, 2, 3, 72, 345, 23, 46, 2, 461, 3, 46, 47, 4357, 34, 75, 43, 74, 57, 45])
 </script>
 </html>
