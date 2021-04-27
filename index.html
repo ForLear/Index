@@ -1,1 +1,595 @@
-<!DOCTYPE html><html><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui"><link rel=icon href=favicon.ico><script src=//res.wx.qq.com/open/js/jweixin-1.4.0.js></script><title>北斗华南傻逼网友聚集地 ver 2.0</title><link as=style href=app.784ad486.css rel=preload><link as=style href=chunk-vendors.467eb99a.css rel=preload><link as=script href=js/app.dd82b166.js rel=preload><link as=script href=js/chunk-vendors.8f7f26d4.js rel=preload><link href=chunk-189a.fc5b28ce.css rel=prefetch><link href=chunk-2483.f7314ba3.css rel=prefetch><link href=chunk-3092.900bf4f7.css rel=prefetch><link href=chunk-4461.edb6cd0a.css rel=prefetch><link href=chunk-584b.3ded9c2c.css rel=prefetch><link href=chunk-5fe5.b9af80dc.css rel=prefetch><link href=chunk-8e49.bf6e7516.css rel=prefetch><link href=chunk-9ef0.c0cd6adf.css rel=prefetch><link href=chunk-d509.19c6d46e.css rel=prefetch><link href=chunk-f559.bf45891d.css rel=prefetch><link href=chunk-f6bb.464a6bc2.css rel=prefetch><link href=js/chunk-0366.af457fce.js rel=prefetch><link href=js/chunk-189a.3a0eea11.js rel=prefetch><link href=js/chunk-2483.3a4aae72.js rel=prefetch><link href=js/chunk-3092.8c3850b6.js rel=prefetch><link href=js/chunk-4461.9e19f018.js rel=prefetch><link href=js/chunk-584b.feaf0d41.js rel=prefetch><link href=js/chunk-5fe5.497ae987.js rel=prefetch><link href=js/chunk-8e49.1c82ff19.js rel=prefetch><link href=js/chunk-9ef0.3ac1e928.js rel=prefetch><link href=js/chunk-d509.940e3403.js rel=prefetch><link href=js/chunk-f559.6d3001fc.js rel=prefetch><link href=js/chunk-f6bb.5b978b19.js rel=prefetch><link href=chunk-vendors.467eb99a.css rel=stylesheet><link href=app.784ad486.css rel=stylesheet></head><body><noscript><strong>We're sorry but lear doesn't work properly without JavaScript enabled. Please enable it to continue.</strong></noscript><div id=app></div><script src=js/chunk-vendors.8f7f26d4.js></script><script src=js/app.dd82b166.js></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <!-- 引入组件库 -->
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <script>
+    viewport = (window, document) => {
+      'use strict';
+
+      //给hotcss开辟个命名空间，别问我为什么，我要给你准备你会用到的方法，免得用到的时候还要自己写。
+      var hotcss = {};
+
+      (function () {
+        //根据devicePixelRatio自定计算scale
+        //可以有效解决移动端1px这个世纪难题。
+        var viewportEl = document.querySelector('meta[name="viewport"]'),
+          hotcssEl = document.querySelector('meta[name="hotcss"]'),
+          dpr = 1,
+          // dpr = window.devicePixelRatio || 1,
+          maxWidth = 375,
+          designWidth = 0;
+
+        // dpr = dpr >= 3 ? 3 : (dpr >= 2 ? 2 : 1);
+
+        //允许通过自定义name为hotcss的meta头，通过initial-dpr来强制定义页面缩放
+        if (hotcssEl) {
+          var hotcssCon = hotcssEl.getAttribute('content');
+          if (hotcssCon) {
+            var initialDprMatch = hotcssCon.match(/initial\-dpr=([\d\.]+)/);
+            if (initialDprMatch) {
+              dpr = parseFloat(initialDprMatch[1]);
+            }
+            var maxWidthMatch = hotcssCon.match(/max\-width=([\d\.]+)/);
+            if (maxWidthMatch) {
+              maxWidth = parseFloat(maxWidthMatch[1]);
+            }
+            var designWidthMatch = hotcssCon.match(/design\-width=([\d\.]+)/);
+            if (designWidthMatch) {
+              designWidth = parseFloat(designWidthMatch[1]);
+            }
+          }
+        }
+
+        document.documentElement.setAttribute('data-dpr', dpr);
+        hotcss.dpr = dpr;
+
+        document.documentElement.setAttribute('max-width', maxWidth);
+        hotcss.maxWidth = maxWidth;
+
+        if (designWidth) {
+          document.documentElement.setAttribute('design-width', designWidth);
+        }
+        hotcss.designWidth = designWidth; // 保证px2rem 和 rem2px 不传第二个参数时, 获取hotcss.designWidth是undefined导致的NaN
+
+        var scale = 1 / dpr,
+          content = 'width=device-width, initial-scale=' + scale + ', minimum-scale=' + scale + ', maximum-scale=' + 1 + ',user - scalable=no';
+
+        if (viewportEl) {
+          viewportEl.setAttribute('content', content);
+        } else {
+          viewportEl = document.createElement('meta');
+          viewportEl.setAttribute('name', 'viewport');
+          viewportEl.setAttribute('content', content);
+          document.head.appendChild(viewportEl);
+        }
+
+      })();
+
+      hotcss.px2rem = function (px, designWidth) {
+        //预判你将会在JS中用到尺寸，特提供一个方法助你在JS中将px转为rem。就是这么贴心。
+        if (!designWidth) {
+          //如果你在JS中大量用到此方法，建议直接定义 hotcss.designWidth 来定义设计图尺寸;
+          //否则可以在第二个参数告诉我你的设计图是多大。
+          designWidth = parseInt(hotcss.designWidth, 10);
+        }
+
+        return parseInt(px, 10) * 320 / designWidth / 20;
+      }
+
+      hotcss.rem2px = function (rem, designWidth) {
+        //新增一个rem2px的方法。用法和px2rem一致。
+        if (!designWidth) {
+          designWidth = parseInt(hotcss.designWidth, 10);
+        }
+        //rem可能为小数，这里不再做处理了
+        return rem * 20 * designWidth / 320;
+      }
+
+      hotcss.mresize = function () {
+        //对，这个就是核心方法了，给HTML设置font-size。
+        var innerWidth = document.documentElement.getBoundingClientRect().width || window.innerWidth;
+
+        if (hotcss.maxWidth && (innerWidth / hotcss.dpr > hotcss.maxWidth)) {
+          innerWidth = hotcss.maxWidth * hotcss.dpr;
+        }
+
+        if (!innerWidth) { return false; }
+
+        document.documentElement.style.fontSize = (innerWidth * 20 / 320) + 'px';
+
+        hotcss.callback && hotcss.callback();
+
+      };
+
+      hotcss.mresize();
+      //直接调用一次
+
+      window.addEventListener('resize', function () {
+        clearTimeout(hotcss.tid);
+        hotcss.tid = setTimeout(hotcss.mresize, 33);
+      }, false);
+      //绑定resize的时候调用
+
+      window.addEventListener('load', hotcss.mresize, false);
+      //防止不明原因的bug。load之后再调用一次。
+
+
+      setTimeout(function () {
+        hotcss.mresize();
+        //防止某些机型怪异现象，异步再调用一次
+      }, 333)
+
+      window.hotcss = hotcss;
+      //命名空间暴露给你，控制权交给你，想怎么调怎么调。
+
+
+    };
+  </script>
+  <style>
+    html {
+      width: 100%;
+    }
+    .content {
+      font-size: 70px;
+    }
+    .comple .comple_title, .abe .comple_title, .figure .comple_title {
+      margin-bottom: 15px;
+      font-size: 20px;
+    }
+    .comple .radius_box {
+      width: 100%;
+      position: relative;
+    }
+    .comple .radius_box .el-radio {
+      height: 80px;
+      margin-bottom: 30px;
+    }
+    .comple .radius_box .el-radio__label {
+      width: 100%;
+      height: 80px;
+      line-height: 80px;
+    }
+    .comple .radius_box .el-radio__inner {
+      margin-bottom: 70px;
+    }
+    .comple .comple_color {
+      width: 50px;
+      height: 50px;
+      margin-left: 30px;
+      padding: 15px;
+      display: inline-block;
+      box-shadow: 0 30px 100px -20px rgba(50,50,93,.25), 0 30px 60px -30px rgba(0,0,0,.3);
+      border-radius: 50%;
+    }
+    .comple .w {
+      background: #FFFFFF;
+    }
+    .comple .g_w {
+      background: #D3D3D3;
+    }
+    .comple .g {
+      background: #909090;
+    }
+    .comple .g_b {
+      background: #484848;
+    }
+    .comple .b {
+      background: #000000;
+    }
+
+    .figure {
+      font-size: 15px;
+    }
+    .figure .radius_box {
+      margin-top: 10px;
+      margin-bottom: 25px;
+    }
+
+    .abe .radius_box .el-radio {
+      height: 30px;
+      line-height: 30px;
+      margin-bottom: 30px;
+    }
+
+    .upload_photo {
+
+    }
+    .up_photo {
+      width: 375px;
+    }
+  </style>
+  <title>色彩分析</title>
+</head>
+<body>
+  <div id="app">
+    <section class="content">
+      <div v-if="step === 1" class="comple">
+        <div class="comple_title">
+          请选择与您肤色最为接近的选项
+          <br>(白/灰白/灰/深灰/黑)
+        </div>
+        <el-radio-group class="radius_box" v-model="checkBox.complexion">
+          <el-radio label="白">
+            <span class="comple_color w"></span>
+          </el-radio>
+          <br>
+          <el-radio label="灰白">
+            <span class="comple_color g_w"></span>
+          </el-radio>
+          <br>
+          <el-radio label="灰">
+            <span class="comple_color g"></span>
+          </el-radio>
+          <br>
+          <el-radio label="深灰">
+            <span class="comple_color g_b"></span>
+          </el-radio>
+          <br>
+          <el-radio label="黑">
+            <span class="comple_color b"></span>
+          </el-radio>
+        </el-radio-group>
+      </div>
+      <div v-if="step === 2" class="abe">
+        <div class="comple_title">
+          请选择与您瞳色、发色、肤色的色差值
+          <br>(非常大/中等/非常弱)
+        </div>
+        <el-radio-group class="radius_box" v-model="checkBox.abe">
+          <el-radio label="非常大"></el-radio>
+          <br>
+          <el-radio label="中等"></el-radio>
+          <br>
+          <el-radio label="非常弱"></el-radio>
+        </el-radio-group>
+      </div>
+      <div v-if="step === 3" class="figure">
+        <div class="comple_title">
+          请选择与您的身高、脸型、眼睛数据
+        </div>
+        眼睛大小:
+        <br>
+        <el-radio-group class="radius_box" v-model="checkBox.eyes">
+          <el-radio label="大"></el-radio>
+          <el-radio label="中等"></el-radio>
+          <el-radio label="小"></el-radio>
+        </el-radio-group>
+        <br>
+        脸型:
+        <br>
+        <el-radio-group class="radius_box" v-model="checkBox.face">
+          <el-radio label="宽"></el-radio>
+          <el-radio label="中等"></el-radio>
+          <el-radio label="窄"></el-radio>
+        </el-radio-group>
+        <br>
+        身高:
+        <br>
+        <el-radio-group class="radius_box" v-model="checkBox.figure">
+          <el-radio label="高">高 (大于170cm)</el-radio>
+          <el-radio label="中等">中等 (160cm 到 169cm)</el-radio>
+          <el-radio style="margin-top: 15px;" label="娇小">娇小 (小于160cm)</el-radio>
+        </el-radio-group>
+      </div>
+      <div v-if="step === 4" class="figure">
+        <div class="comple_title">
+          请选择与您的骨骼感与瞳色、发色、肤色的色差值
+        </div>
+        骨骼感:
+        <br>
+        <el-radio-group class="radius_box" v-model="checkBox.bone">
+          <el-radio label="明显"></el-radio>
+          <el-radio label="中等"></el-radio>
+          <el-radio label="不明显"></el-radio>
+        </el-radio-group>
+        <br>
+      </div>
+      <div class="upload_photo">
+        <input id="file" type="file" @input="uoload">
+      </div>
+      <img class="up_photo" :src="img">
+      <el-button type="primary" @click="next(step)">下一步</el-button>
+      <el-button type="primary" @click="consoleResult(step)">看结果(测试用)</el-button>
+    </section>
+  </div>
+</body>
+
+
+<script>
+  new Vue({
+    el: '#app',
+    data() {
+      return {
+        // 1 - 肤色  2 - 色差
+        step: 1,
+        colorResult: '',
+        absResult: '',
+
+        img: '',
+
+        checkBox: {
+          // 肤色
+          complexion: '',
+          abe: '',
+          eyes: '',
+          face: '',
+          figure: '',
+          bone: '',
+        },
+
+        result: {
+          complexionColor: [],
+          absColor: [],
+          figure: '',
+          photo: '',
+        },
+
+        color: {
+          P: '淡色调',
+          It: '浅色调',
+          b: '明亮色调',
+          v: '鲜艳色调',
+          Itg: '浅灰色调',
+          sf: '轻柔色调',
+          s: '强烈色调',
+          g: '灰色调',
+          d: '浊色调',
+          dkg: '暗灰色调',
+          dk: '暗色调',
+          dp: '深色调',
+        },
+        closethStyle: {
+          '明显': '可穿非常夸张、复杂款式的衣服',
+          '中等': '可穿有一定款式的衣服',
+          '不明显': '可穿简约、简单款式的衣服',
+        },
+        type: {
+          '明显 非常大': '有色有骨 色动款动',
+          '明显 中等': '有色有骨 色动款动',
+          '明显 非常弱': '无色有骨 色静款动',
+          '中等 非常大': '有色有骨 色动款动',
+          '中等 中等': '有色有骨 色动款动',
+          '中等 非常弱': '无色有骨 色静款动',
+          '不明显 非常大': '有色无骨 色动款静',
+          '不明显 中等': '有色无骨 色动款静',
+          '不明显 非常弱': '无色无骨 色静款静',
+        },
+        abeData: ['非常大', '中等', '非常弱'],
+        colorData: ['白', '灰白', '灰', '深灰', '黑'],
+        eyesData: ['大', '中等', '小'],
+        faceData: ['宽', '中等', '窄'],
+        figureData: ['高', '中等', '娇小'],
+      }
+    },
+    mounted() {
+      // 自适应
+      viewport(window, document)
+    },
+    methods: {
+      // 选择肤色
+      checkComple(val, jump) {
+        switch(val) {
+          case '白': 
+            this.result.complexionColor = ['P', 'It', 'b', 'v']
+            if(!jump) this.step++
+            break
+          case '灰白': 
+            this.result.complexionColor = ['Itg', 'sf', 's']
+            if(!jump) this.step++
+            break
+          case '灰': 
+            this.result.complexionColor = ['Itg', 'g', 'sf', 'd', 's']
+            if(!jump) this.step++
+            break
+          case '深灰': 
+            this.result.complexionColor = ['g', 'd', 's']
+            if(!jump) this.step++
+            break
+          case '黑': 
+            this.result.complexionColor = ['dkg', 'dk', 'dp']
+            if(!jump) this.step++
+            break
+          default: break
+        }
+      },
+
+      // 选择色差
+      checkAbe(val, jump) {
+        this.abeData.forEach(item => {
+          this.colorData.forEach(subItem => {
+            switch(`${val} ${this.checkBox.complexion}`) {
+              case '非常大 白':
+                this.result.absColor = ['v', 'b']
+                break
+              case '非常大 灰白':
+                this.result.absColor = ['b']
+                break
+              case '非常大 灰':
+                this.result.absColor = ['s']
+                break
+              case '非常大 深灰':
+                this.result.absColor = ['dp']
+                break
+              case '非常大 黑':
+                this.result.absColor = ['v', 'dp', 'dk']
+                break
+              case '中等 白':
+                this.result.absColor = ['It', 'b']
+                break
+              case '中等 灰白':
+                this.result.absColor = ['sf', 'b', 'It']
+                break
+              case '中等 灰':
+                this.result.absColor = ['sf', 'd', 's']
+                break
+              case '中等 深灰':
+                this.result.absColor = ['d']
+                break
+              case '中等 黑':
+                this.result.absColor = ['dp', 'dk']
+                break
+              case '非常弱 白':
+                this.result.absColor = ['p', 'It']
+                break
+              case '非常弱 灰白':
+                this.result.absColor = ['Itg']
+                break
+              case '非常弱 灰':
+                this.result.absColor = ['Itg', 'g']
+                break
+              case '非常弱 深灰':
+                this.result.absColor = ['g']
+                break
+              case '非常弱 黑':
+                this.result.absColor = ['dkg']
+                break
+              default: break
+            }
+          })
+        })
+        if(!jump) this.step++
+      },
+
+      // 选择身材脸型
+      checkFigure(jump) {
+        this.figureData.forEach(item => {
+          this.eyesData.forEach(subItem => {
+            switch(`${this.checkBox.figure} ${this.checkBox.eyes}`) {
+              case '高 大':
+                this.result.figure = '大图案, 且可穿不规则图案'
+                break
+              case '高 中等':
+                this.result.figure = '大图案, 中等图案'
+                break
+              case '高 小':
+                this.result.figure = '大图案, 中等图案'
+                break
+              case '中等 大':
+                this.result.figure = '大图案, 中等图案'
+                break
+              case '中等 中等':
+                this.result.figure = '中等图案'
+                break
+              case '中等 小':
+                this.result.figure = '中等图案, 小图案'
+                break
+              case '娇小 大':
+                this.result.figure = '中等图案, 小图案'
+                break
+              case '娇小 中等':
+                this.result.figure = '中等图案, 小图案'
+                break
+              case '娇小 小':
+                this.result.figure = '小图案'
+                break
+              default: break
+            }
+          })
+          this.faceData.forEach(subItem => {
+            switch(`${this.checkBox.figure} ${this.checkBox.face}`) {
+              case '高 宽':
+                this.result.photo = '宽 + 宽'
+                break
+              case '高 中等':
+                this.result.photo = '宽 + 窄'
+                break
+              case '高 窄':
+                this.result.photo = '宽 + 窄'
+                break
+              case '中等 宽':
+                this.result.photo = '宽 + 窄'
+                break
+              case '中等 中等':
+                this.result.photo = '宽 + 窄'
+                break
+              case '中等 窄':
+                this.result.photo = '宽 + 窄'
+                break
+              case '娇小 宽':
+                this.result.photo = '宽 + 窄'
+                break
+              case '娇小 中等':
+                this.result.photo = '宽 + 窄'
+                break
+              case '娇小 窄':
+                this.result.photo = '窄 + 窄'
+                break
+              default: break
+            }
+          })
+        })
+        if(!jump) this.step++
+        console.log(this.checkBox, this.result)
+      },
+
+      // 打印结果
+      consoleResult(step) {
+        let text = ''
+        switch(step) {
+          case 1:
+            this.checkComple(this.checkBox.complexion, true)
+            this.result.complexionColor.forEach(item => {
+              text += `${item} ${this.color[item]} `
+            })
+            this.colorResult = text
+            alert(`肤色: ${this.checkBox.complexion}, 适合色调: ${text}`)
+            break
+          case 2:
+            this.checkAbe(this.checkBox.abe, true)
+            this.result.absColor.forEach(item => {
+              text += `${item} ${this.color[item]} `
+            })
+            this.absResult = text
+            alert(`肤色: ${this.checkBox.complexion}, 色差: ${this.checkBox.abe}, 适合色调: ${text}`)
+            break
+          case 3:
+            this.checkFigure(true)
+            alert(`推荐首饰/配饰/服装上的图案: ${this.result.figure}, 推荐衣服廓形(松紧): ${this.result.photo}`)
+            break
+          case 4:
+            console.log(this.type, this.checkBox)
+            alert(`推荐衣服版型(款型): ${this.closethStyle[this.checkBox.bone]}, 辨别类型: ${this.type[this.checkBox.bone + ' ' + this.checkBox.abe]}`)
+            break
+          default: break
+        }
+      },
+
+      // 下一步
+      next(step) {
+        switch (step) {
+          case 1:
+            this.checkComple(this.checkBox.complexion)
+            break
+          case 2:
+            this.checkAbe(this.checkBox.abe)
+            console.log(this.step)
+            break
+          case 3:
+            this.checkFigure()
+            break
+          default: break
+        }
+      },
+
+      uoload(e) {
+        let reader = new FileReader();
+        reader.readAsDataURL(e.target.files[0])
+        this.img = reader.result
+        let self = this
+        reader.onload = () => {
+          self.img = reader.result
+        }
+        this.$forceUpdate()
+      },
+    },
+  })
+</script>
+</html>
