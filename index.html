@@ -138,6 +138,7 @@
       width: 100%;
     }
     .content {
+      padding: 0 5%;
       font-size: 70px;
     }
     .comple .comple_title, .abe .comple_title, .figure .comple_title {
@@ -199,11 +200,59 @@
       margin-bottom: 30px;
     }
 
-    .upload_photo {
-
+    .upload_div {
+      width: 100%;
+      height: 150px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 5px;
+      border: 1px solid #409EFF;
+      cursor: pointer;
+      margin-bottom: 30px;
     }
-    .up_photo {
-      width: 375px;
+    .upload_div span {
+      display: inline-block;
+      font-size: 70px;
+      color: #409EFF;
+    }
+    .upload_div img {
+      height: 130px;
+    }
+    .input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .btn_group {
+      bottom: 20px;
+      width: 89%;
+      /* padding: 0 5%; */
+      height: auto;
+      position: fixed;
+    }
+    .btn_group .btn {
+      width: 43.1%;
+      display: inline-block;
+      vertical-align: top;
+    }
+    .el-button+.el-button {
+      margin-left: 0;
+      float: right;
+    }
+    .result_page {
+      text-align: center;
+    }
+    .result_page div {
+      text-align: left;
+      font-size: 13px;
+      padding: 0 5%;
+      margin-bottom: 15px;
+      font-family:"微软雅黑";
+    }
+
+    .result_page img {
+      width: 90%;
     }
   </style>
   <title>色彩分析</title>
@@ -275,16 +324,14 @@
         <br>
         <el-radio-group class="radius_box" v-model="checkBox.figure">
           <el-radio label="高">高 (大于170cm)</el-radio>
-          <el-radio label="中等">中等 (160cm 到 169cm)</el-radio>
+          <el-radio style="margin-top: 15px;" label="中等">中等 (160cm 到 169cm)</el-radio>
           <el-radio style="margin-top: 15px;" label="娇小">娇小 (小于160cm)</el-radio>
         </el-radio-group>
       </div>
       <div v-if="step === 4" class="figure">
         <div class="comple_title">
-          请选择与您的骨骼感与瞳色、发色、肤色的色差值
+          请选择与您的骨骼感
         </div>
-        骨骼感:
-        <br>
         <el-radio-group class="radius_box" v-model="checkBox.bone">
           <el-radio label="明显"></el-radio>
           <el-radio label="中等"></el-radio>
@@ -292,13 +339,60 @@
         </el-radio-group>
         <br>
       </div>
-      <div class="upload_photo">
-<!--         <input id="file" type="file" @input="uoload" capture="camera"> -->
-        <input id="file" type="file" @input="uoload">
+      <div v-if="step === 5" class="figure">
+        <div class="comple_title">
+          深浅搭配:
+        </div>
+        <br>
+        <el-radio-group class="radius_box" v-model="checkBox.other_1">
+          <el-radio label="深浅1:1"></el-radio>
+          <el-radio label="深多浅少"></el-radio>
+          <el-radio label="浅多深少"></el-radio>
+        </el-radio-group>
+        <br>
+        <div class="comple_title">
+          场景:
+        </div>
+        <br>
+        <el-radio-group class="radius_box" v-model="checkBox.other_2">
+          <el-radio label="通勤"></el-radio>
+          <el-radio label="商务"></el-radio>
+          <el-radio label="日间社交"></el-radio>
+          <el-radio label="晚间社交"></el-radio>
+          <el-radio label="出游"></el-radio>
+        </el-radio-group>
+        <br>
+      <!-- </div>
+      <div v-if="step === 6" class="upload_photo"> -->
+        <br>
+        <div class="comple_title">
+          上传照片:
+        </div>
+        <br>
+        <input id="input" class="input" @input="upload" type="file">
+        <div class="upload_div" @click="toUpload">
+          <span v-if="!img" class="el-icon-upload2"></span>
+          <img v-else :src="img">
+        </div>
       </div>
-      <img class="up_photo" :src="img">
-      <el-button type="primary" @click="next(step)">下一步</el-button>
-      <el-button type="primary" @click="consoleResult(step)">看结果(测试用)</el-button>
+      <div v-if="step === 6" class="result_page">
+        <img :src="img">
+        <!-- <div>{{ `肤色: ${checkBox.complexion}, 适合色调: ${colorResult}` }}</div> -->
+        <div>{{ `肤色: ${checkBox.complexion}, 色差: ${checkBox.abe}` }}</div>
+        <div>{{ `适合色调: ${absResult}` }}</div>
+        <div>{{ `推荐首饰/配饰/服装上的图案: ${result.figure}` }}</div>
+        <div>{{ `推荐衣服廓形(松紧): ${result.photo}` }}</div>
+        <div>{{ `推荐衣服版型(款型): ${closethStyle[checkBox.bone]}` }}</div>
+        <div>{{ `辨别类型: ${type[checkBox.bone + ' ' + checkBox.abe]}` }}</div>
+        <div>{{ `深浅搭配: ${checkBox.other_1}` }}</div>
+        <div>{{ `场景: ${checkBox.other_2}` }}</div>
+        <div></div>
+      </div>
+      <!-- <el-button type="primary" @click="consoleResult(step)">看结果(测试用)</el-button> -->
+      <div v-if="step !== 6" class="btn_group">
+        <el-button class="btn" v-if="step > 1" type="primary" @click="step > 1 ? step-- : ''">上一步</el-button>
+        <el-button class="btn" type="primary" @click="next(step)">下一步</el-button>
+      </div>
     </section>
   </div>
 </body>
@@ -324,6 +418,8 @@
           face: '',
           figure: '',
           bone: '',
+          other_1: '',
+          other_2: '',
         },
 
         result: {
@@ -331,6 +427,8 @@
           absColor: [],
           figure: '',
           photo: '',
+          other_1: '',
+          other_2: '',
         },
 
         color: {
@@ -377,6 +475,7 @@
     methods: {
       // 选择肤色
       checkComple(val, jump) {
+        if(!val) return
         switch(val) {
           case '白': 
             this.result.complexionColor = ['P', 'It', 'b', 'v']
@@ -404,6 +503,7 @@
 
       // 选择色差
       checkAbe(val, jump) {
+        if(!val) return
         this.abeData.forEach(item => {
           this.colorData.forEach(subItem => {
             switch(`${val} ${this.checkBox.complexion}`) {
@@ -456,11 +556,15 @@
             }
           })
         })
+        this.result.absColor.forEach(item => {
+          this.absResult += `${item} ${this.color[item]} `
+        })
         if(!jump) this.step++
       },
 
       // 选择身材脸型
       checkFigure(jump) {
+        if(!this.checkBox.figure || !this.checkBox.eyes || !this.checkBox.face) return
         this.figureData.forEach(item => {
           this.eyesData.forEach(subItem => {
             switch(`${this.checkBox.figure} ${this.checkBox.eyes}`) {
@@ -541,22 +645,22 @@
               text += `${item} ${this.color[item]} `
             })
             this.colorResult = text
-            alert(`肤色: ${this.checkBox.complexion}, 适合色调: ${text}`)
+            alert(`肤色: ${this.checkBox.complexion}, 适合色调: ${this.colorResult}`)
             break
           case 2:
-            this.checkAbe(this.checkBox.abe, true)
+            // this.checkAbe(this.checkBox.abe, true)
             this.result.absColor.forEach(item => {
               text += `${item} ${this.color[item]} `
             })
             this.absResult = text
-            alert(`肤色: ${this.checkBox.complexion}, 色差: ${this.checkBox.abe}, 适合色调: ${text}`)
+            console.log(this.absResult)
+            alert(`肤色: ${this.checkBox.complexion}, 色差: ${this.checkBox.abe}, 适合色调: ${this.absResult}`)
             break
           case 3:
             this.checkFigure(true)
             alert(`推荐首饰/配饰/服装上的图案: ${this.result.figure}, 推荐衣服廓形(松紧): ${this.result.photo}`)
             break
           case 4:
-            console.log(this.type, this.checkBox)
             alert(`推荐衣服版型(款型): ${this.closethStyle[this.checkBox.bone]}, 辨别类型: ${this.type[this.checkBox.bone + ' ' + this.checkBox.abe]}`)
             break
           default: break
@@ -571,22 +675,37 @@
             break
           case 2:
             this.checkAbe(this.checkBox.abe)
-            console.log(this.step)
             break
           case 3:
             this.checkFigure()
+            break
+          case 4:
+            console.log(this.checkBox, this.result)
+            if(!this.checkBox.bone) return
+            // alert(`推荐衣服版型(款型): ${this.closethStyle[this.checkBox.bone]}, 辨别类型: ${this.type[this.checkBox.bone + ' ' + this.checkBox.abe]}`)
+            this.step++
+            break
+          case 5:
+            if (!this.checkBox.other_1 || !this.checkBox.other_2 || !this.img) return
+            this.step++
             break
           default: break
         }
       },
 
-      uoload(e) {
+      toUpload() {
+        let dom = document.getElementById('input')
+        dom.click()
+      },
+      upload(e) {
         let reader = new FileReader();
         reader.readAsDataURL(e.target.files[0])
         this.img = reader.result
         let self = this
         reader.onload = () => {
           self.img = reader.result
+          console.log('img: ', self.img)
+          self.$forceUpdate()
         }
         this.$forceUpdate()
       },
