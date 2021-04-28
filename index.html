@@ -293,7 +293,7 @@
         <br>
       </div>
       <div class="upload_photo">
-        <input id="file" type="file" @input="uoload">
+        <input id="file" type="file" @input="uoload" capture="camera">
       </div>
       <img class="up_photo" :src="img">
       <el-button type="primary" @click="next(step)">下一步</el-button>
