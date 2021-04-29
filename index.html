@@ -380,7 +380,7 @@
       <div v-if="step === 6" class="result_page">
         <img :src="img">
         <!-- <div>{{ `肤色: ${checkBox.complexion}, 适合色调: ${colorResult}` }}</div> -->
-        <div>{{ `肤色: ${checkBox.complexion}, 色差: ${checkBox.abe}` }}</div>
+        <div>{{ `肤色: ${state[checkBox.complexion]}, 色差: ${checkBox.abe}` }}</div>
         <div>{{ `适合色调: ${absResult}` }}</div>
         <div>{{ `推荐首饰/配饰/服装上的图案: ${result.figure}` }}</div>
         <div>{{ `推荐衣服廓形(松紧): ${result.photo}` }}</div>
