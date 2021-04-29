@@ -255,7 +255,7 @@
       width: 90%;
     }
   </style>
-  <title>美丽升级作业</title>
+  <title>F29班美丽升级计划</title>
 </head>
 <body>
   <div id="app">
@@ -263,7 +263,7 @@
       <div v-if="step === 1" class="comple">
         <div class="comple_title">
           请选择与您肤色最为接近的选项
-          <br>(白/灰白/灰/深灰/黑)
+          <br>
         </div>
         <el-radio-group class="radius_box" v-model="checkBox.complexion">
           <el-radio label="白">
@@ -302,9 +302,9 @@
       </div>
       <div v-if="step === 3" class="figure">
         <div class="comple_title">
-          请选择您的身高、脸型、眼睛数据
+          请选择您的脸型、眼睛、身高数据
         </div>
-        眼睛大小:
+        眼睛:
         <br>
         <el-radio-group class="radius_box" v-model="checkBox.eyes">
           <el-radio label="大"></el-radio>
@@ -334,14 +334,14 @@
         </div>
         <el-radio-group class="radius_box" v-model="checkBox.bone">
           <el-radio label="明显"></el-radio>
-          <el-radio label="中等"></el-radio>
+<!--           <el-radio label="中等"></el-radio> -->
           <el-radio label="不明显"></el-radio>
         </el-radio-group>
         <br>
       </div>
       <div v-if="step === 5" class="figure">
         <div class="comple_title">
-          深浅搭配:
+          今日穿搭配色说明:
         </div>
         <br>
         <el-radio-group class="radius_box" v-model="checkBox.other_1">
@@ -351,7 +351,7 @@
         </el-radio-group>
         <br>
         <div class="comple_title">
-          场景:
+          今日穿搭适用场景:
         </div>
         <br>
         <el-radio-group class="radius_box" v-model="checkBox.other_2">
@@ -469,6 +469,14 @@
         eyesData: ['大', '中等', '小'],
         faceData: ['宽', '中等', '窄'],
         figureData: ['高', '中等', '娇小'],
+        
+        state: {
+          '白':　'浅',
+          '灰白':　'中',
+          '灰':　'中',
+          '深灰':　'中',
+          '黑':　'深',
+        },
       }
     },
     mounted() {
