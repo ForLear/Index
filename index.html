@@ -252,7 +252,10 @@
     }
 
     .result_page img {
-      width: 75%;
+      width: 80%;
+    }
+    .1st {
+      text-align: left !important;
     }
   </style>
   <title>F29班美丽升级计划</title>
@@ -263,9 +266,10 @@
       <div v-if="step === 7" class="result_page">
         <img :src="img">
         <!-- <div>{{ `肤色: ${checkBox.complexion}, 适合色调: ${colorResult}` }}</div> -->
-        <div>{{ `小组: ${classs}` }}</div>
-        <div>{{ `姓名: ${name}` }}</div>
-        <div>{{ `第 ${count} 次打卡` }}</div>
+        <div></div>
+        <div class="1st">{{ `小组: ${classs}` }}</div>
+        <div class="1st">{{ `姓名: ${name}` }}</div>
+        <div class="1st">{{ `第 ${count} 次打卡` }}</div>
         <div>{{ `肤色: ${state[checkBox.complexion]}, 色差: ${checkBox.abe}` }}</div>
         <div>{{ `推荐色调: ${absResult}` }}</div>
         <div>{{ `推荐首饰/配饰/服装上的图案: ${result.figure}` }}</div>
