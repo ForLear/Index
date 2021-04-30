@@ -380,15 +380,15 @@
       <div v-if="step === 5" class="figure">
         <div class="comple_title">
           姓名:
-        <el-input v-model="name">
+        <el-input v-model="name"></el-input>
         <br>
         <div class="comple_title">
           班级:
-        <el-input v-model="class">
+        <el-input v-model="classs"></el-input>
         <br>
         <div class="comple_title">
           {{ 第几次打卡(上一次提交为第 ${exCount} 次) }}
-        <el-input v-model="count">
+        <el-input v-model="count"></el-input>
       </div>
       <div v-if="step === 7" class="result_page">
         <img :src="img">
@@ -426,7 +426,7 @@
         colorResult: '',
         absResult: '',
         name: localStorage.getItem('name') ? localStorage.getItem('name') : '',
-        class: localStorage.getItem('class') ? localStorage.getItem('class') : '',
+        classs: localStorage.getItem('class') ? localStorage.getItem('classs') : '',
         exCount: localStorage.getItem('exCount') ? localStorage.getItem('exCount') : '',
         count: '',
 
@@ -758,7 +758,7 @@
               return
             }
             localStorage.setItem('name', this.name)
-            localStorage.setItem('class', this.class)
+            localStorage.setItem('classs', this.classs)
             localStorage.setItem('count', this.count)
             this.step++
             break
