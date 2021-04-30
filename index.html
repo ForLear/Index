@@ -377,9 +377,25 @@
           <img v-else :src="img">
         </div>
       </div>
-      <div v-if="step === 6" class="result_page">
+      <div v-if="step === 5" class="figure">
+        <div class="comple_title">
+          姓名:
+        <el-input v-model="name">
+        <br>
+        <div class="comple_title">
+          班级:
+        <el-input v-model="class">
+        <br>
+        <div class="comple_title">
+          第几次打卡(上一次提交为第{{ ${exCount} }}):
+        <el-input v-model="count">
+      </div>
+      <div v-if="step === 7" class="result_page">
         <img :src="img">
         <!-- <div>{{ `肤色: ${checkBox.complexion}, 适合色调: ${colorResult}` }}</div> -->
+        <div>{{ `班级: ${class}, 姓名: ${name}` }}</div>
+        <div>{{ `第 ${count} 次打卡` }}</div>
+        <br>
         <div>{{ `肤色: ${state[checkBox.complexion]}, 色差: ${checkBox.abe}` }}</div>
         <div>{{ `推荐色调: ${absResult}` }}</div>
         <div>{{ `推荐首饰/配饰/服装上的图案: ${result.figure}` }}</div>
@@ -393,7 +409,7 @@
       <!-- <el-button type="primary" @click="consoleResult(step)">看结果(测试用)</el-button> -->
       <div v-if="step !== 6" class="btn_group">
         <el-button class="btn" v-if="step > 1" type="primary" @click="step > 1 ? step-- : ''">上一步</el-button>
-        <el-button class="btn" type="primary" @click="next(step)">{{ step === 5 ? '提交' : '下一步' }}</el-button>
+        <el-button class="btn" type="primary" @click="next(step)">{{ step === 6 ? '提交' : '下一步' }}</el-button>
       </div>
     </section>
   </div>
@@ -409,6 +425,10 @@
         step: 1,
         colorResult: '',
         absResult: '',
+        name: localStorage.getItem('name') ? localStorage.getItem('name') : '',
+        class: localStorage.getItem('class') ? localStorage.getItem('class') : '',
+        exCount: localStorage.getItem('exCount') ? localStorage.getItem('exCount') : '',
+        count: '',
 
         img: '',
 
@@ -481,6 +501,7 @@
     mounted() {
       // 自适应
       viewport(window, document)
+      this.count = this.exCount
     },
     methods: {
       // 选择肤色
@@ -726,6 +747,19 @@
               })
               return
             }
+            this.step++
+            break
+          case 6:
+            if(!this.name || !this.class || !this.count) {
+              this.$message({
+                message: '请输入您的姓名、班级、打卡次数',
+                type: 'warning'
+              })
+              return
+            }
+            localStorage.setItem('name', this.name)
+            localStorage.setItem('class', this.class)
+            localStorage.setItem('count', this.count)
             this.step++
             break
           default: break
