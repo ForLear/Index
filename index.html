@@ -260,6 +260,27 @@
 <body>
   <div id="app">
     <section class="content">
+      <div v-if="step === 7" class="result_page">
+        <img :src="img">
+        <!-- <div>{{ `肤色: ${checkBox.complexion}, 适合色调: ${colorResult}` }}</div> -->
+        <div>{{ `班级: ${classs}, 姓名: ${name}` }}</div>
+        <div>{{ `第 ${count} 次打卡` }}</div>
+        <br>
+        <div>{{ `肤色: ${state[checkBox.complexion]}, 色差: ${checkBox.abe}` }}</div>
+        <div>{{ `推荐色调: ${absResult}` }}</div>
+        <div>{{ `推荐首饰/配饰/服装上的图案: ${result.figure}` }}</div>
+        <div>{{ `推荐衣服廓形(松紧): ${result.photo}` }}</div>
+        <div>{{ `推荐衣服版型(款型): ${closethStyle[checkBox.bone]}` }}</div>
+        <div>{{ `辨别类型: ${type[checkBox.bone + ' ' + checkBox.abe]}` }}</div>
+        <div>{{ `深浅搭配: ${checkBox.other_1}` }}</div>
+        <div>{{ `场景: ${checkBox.other_2}` }}</div>
+        <div></div>
+      </div>
+      <!-- <el-button type="primary" @click="consoleResult(step)">看结果(测试用)</el-button> -->
+      <div v-if="step !== 7" class="btn_group">
+        <el-button class="btn" v-if="step > 1" type="primary" @click="step > 1 ? step-- : ''">上一步</el-button>
+        <el-button class="btn" type="primary" @click="next(step)">{{ step === 6 ? '提交' : '下一步' }}</el-button>
+      </div>
       <div v-if="step === 1" class="comple">
         <div class="comple_title">
           请选择与您肤色最为接近的选项
@@ -377,7 +398,7 @@
           <img v-else :src="img">
         </div>
       </div>
-      <div v-if="step === 5" class="figure">
+      <div v-if="step === 6" class="figure">
         <div class="comple_title">
           姓名:
         <el-input v-model="name"></el-input>
@@ -389,27 +410,6 @@
         <div class="comple_title">
           {{ `第几次打卡(上一次提交为第 ${exCount} 次)` }}
         <el-input v-model="count"></el-input>
-      </div>
-      <div v-if="step === 7" class="result_page">
-        <img :src="img">
-        <!-- <div>{{ `肤色: ${checkBox.complexion}, 适合色调: ${colorResult}` }}</div> -->
-        <div>{{ `班级: ${classs}, 姓名: ${name}` }}</div>
-        <div>{{ `第 ${count} 次打卡` }}</div>
-        <br>
-        <div>{{ `肤色: ${state[checkBox.complexion]}, 色差: ${checkBox.abe}` }}</div>
-        <div>{{ `推荐色调: ${absResult}` }}</div>
-        <div>{{ `推荐首饰/配饰/服装上的图案: ${result.figure}` }}</div>
-        <div>{{ `推荐衣服廓形(松紧): ${result.photo}` }}</div>
-        <div>{{ `推荐衣服版型(款型): ${closethStyle[checkBox.bone]}` }}</div>
-        <div>{{ `辨别类型: ${type[checkBox.bone + ' ' + checkBox.abe]}` }}</div>
-        <div>{{ `深浅搭配: ${checkBox.other_1}` }}</div>
-        <div>{{ `场景: ${checkBox.other_2}` }}</div>
-        <div></div>
-      </div>
-      <!-- <el-button type="primary" @click="consoleResult(step)">看结果(测试用)</el-button> -->
-      <div v-if="step !== 7" class="btn_group">
-        <el-button class="btn" v-if="step > 1" type="primary" @click="step > 1 ? step-- : ''">上一步</el-button>
-        <el-button class="btn" type="primary" @click="next(step)">{{ step === 6 ? '提交' : '下一步' }}</el-button>
       </div>
     </section>
   </div>
